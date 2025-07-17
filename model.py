@@ -1,5 +1,15 @@
 from torch import nn
 
+import utils
+from sim_info import SimInfo
+
+from utils import *
+
+# constants
+info = SimInfo()
+
+
+# model
 class LSTM(nn.Module):
     def __init__(self, input_dim = 24, hidden_dim = 12, output_dim = 8, activation_func = nn.Sigmoid(), fc_dim = 1, num_layers=1):
         super(LSTM, self).__init__()
@@ -22,5 +32,29 @@ class LSTM(nn.Module):
         logits = self.fc(output)  # (batch, seq_len, vocab_size)
         return logits, hidden
 
-model = LSTM(num_layers=2)
+# consider our outputs
+# gas, brake (allow both), steering angle
+
+# consider our inputs:
+# current position, velocity, slip on each wheel, steering angle(?)
+
+# train the ai so that it maximizes the velocity relative to ideal spline.
+# this means maximize the delta of "normalized car position" every moment
+
+# fail the ai if it doesn't move for 3 seconds.
+
+
+# start by waiting for 5 seconds to see starting position. 
+
+# utils.parse_input is 1d
+init = utils.parse_input()
+
+dim = len(init)
+
+model = LSTM(input_dim=dim, num_layers=2)
 print(model)
+
+while True:
+    model.learn()
+    inputs = utils.parse_input()
+
