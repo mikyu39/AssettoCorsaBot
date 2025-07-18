@@ -36,7 +36,8 @@ def perform_output(inputs):
 
 def restart():
     global old_progress
-    pyautogui.hotkey('ctrl', 'o')
+    with pyautogui.hold('ctrl'):
+        pyautogui.press('O')
     old_progress = info.graphics.normalizedCarPosition
     laps = info.graphics.completedLaps
 
