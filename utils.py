@@ -7,6 +7,8 @@ info = SimInfo()
 old_progress = 0
 laps = 0
 gamepad = vg.VX360Gamepad()
+gamepad.reset()
+gamepad.update()
 
 def parse_input():
     global old_progress
@@ -23,21 +25,25 @@ def parse_input():
 
 def perform_output(inputs):
     global gamepad
-    # inputs gas and brake are from -1.0 to 1.0, constrain back to 0.0 to 1.0
-    constrained_gas = abs((inputs[0]+1.0)/2.0)
-    constrained_brake = abs((inputs[1] + 1.0) / 2.0)
+    # inputs gas are from -1.0 to 1.0, constrain back to 0.0 to 1.0
+    gas = abs((inputs[0]+1.0)/2.0)
+    brake = abs((inputs[1]+1.0)/2.0)
     # steering format is fine as is.
     steering = inputs[2]
 
-    gamepad.right_trigger_float(constrained_gas)
-    gamepad.left_trigger_float(constrained_brake)
-    gamepad.left_joystick_float(steering, 0)
+    gamepad.right_trigger_float(gas)
+    gamepad.left_trigger_float(brake)
+    gamepad.left_joystick_float(steering,0)
     gamepad.update()
 
 def restart():
     global old_progress
-    with pyautogui.hold('ctrl'):
-        pyautogui.press('O')
+    gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
+    gamepad.update()
+    time.sleep(0.1)
+    gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
+    gamepad.update()
+    time.sleep(0.1)
     old_progress = info.graphics.normalizedCarPosition
     laps = info.graphics.completedLaps
 

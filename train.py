@@ -2,6 +2,7 @@ import os
 import glob
 import time
 from datetime import datetime
+import subprocess
 
 import torch
 import numpy as np
@@ -18,10 +19,10 @@ def train():
 
     has_continuous_action_space = True  # continuous action space; else discrete
 
-    max_ep_len = 1000                   # max timesteps in one episode
-    max_training_timesteps = int(3e6)   # break training loop if timesteps > max_training_timesteps
+    max_ep_len = int(2e4)                   # max timesteps in one episode
+    max_training_timesteps = int(3e6)  # break training loop if timesteps > max_training_timesteps
 
-    print_freq = max_ep_len * 10        # print avg reward in the interval (in num timesteps)
+    print_freq = max_ep_len * 2        # print avg reward in the interval (in num timesteps)
     log_freq = max_ep_len * 2           # log avg reward in the interval (in num timesteps)
     save_model_freq = int(1e5)          # save model frequency (in num timesteps)
 
@@ -181,6 +182,10 @@ def train():
             if time_step % update_timestep == 0:
                 ppo_agent.update()
 
+            # break; if the episode is over
+            if done:
+                break
+
             # if continuous action space; then decay action std of ouput action distribution
             if has_continuous_action_space and time_step % action_std_decay_freq == 0:
                 ppo_agent.decay_action_std(action_std_decay_rate, min_action_std)
@@ -192,7 +197,7 @@ def train():
                 log_avg_reward = log_running_reward / log_running_episodes
                 log_avg_reward = round(log_avg_reward, 4)
 
-                log_f.write('{},{},{}\n'.format(i_episode, time_step, log_avg_reward))
+                log_f.write('{},{},{:.10f}\n'.format(i_episode, time_step, log_avg_reward))
                 log_f.flush()
 
                 log_running_reward = 0
@@ -205,8 +210,8 @@ def train():
                 print_avg_reward = print_running_reward / print_running_episodes
                 print_avg_reward = round(print_avg_reward, 2)
 
-                print("Episode : {} \t\t Timestep : {} \t\t Average Reward : {}".format(i_episode, time_step, print_avg_reward))
-
+                print("Episode : {} \t\t Timestep : {} \t\t Average Reward : {:.10f}".format(i_episode, time_step, print_avg_reward))
+                print(reward)
                 print_running_reward = 0
                 print_running_episodes = 0
 
@@ -219,10 +224,6 @@ def train():
                 print("Elapsed Time  : ", datetime.now().replace(microsecond=0) - start_time)
                 print("--------------------------------------------------------------------------------------------")
 
-            # break; if the episode is over
-            if done:
-                print('done')
-                break
 
         print_running_reward += current_ep_reward
         print_running_episodes += 1
@@ -242,6 +243,9 @@ def train():
     print("Total training time  : ", end_time - start_time)
     print("============================================================================================")
 
+    for i in range(5):
+        subprocess.call("TASKKILL /F /IM acs.exe", shell=True)
+        time.sleep(10)
 
 if __name__ == '__main__':
 
