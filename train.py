@@ -3,6 +3,7 @@ import glob
 import time
 from datetime import datetime
 import subprocess
+from pathlib import Path
 
 import torch
 import numpy as np
@@ -20,7 +21,7 @@ def train():
     has_continuous_action_space = True  # continuous action space; else discrete
 
     max_ep_len = int(2e4)                   # max timesteps in one episode
-    max_training_timesteps = int(3e6)  # break training loop if timesteps > max_training_timesteps
+    max_training_timesteps = int(6e6)  # break training loop if timesteps > max_training_timesteps
 
     print_freq = max_ep_len * 2        # print avg reward in the interval (in num timesteps)
     log_freq = max_ep_len * 2           # log avg reward in the interval (in num timesteps)
@@ -138,6 +139,9 @@ def train():
     # initialize a PPO agent
     ppo_agent = PPO(state_dim, action_dim, lr_actor, lr_critic, gamma, K_epochs, eps_clip, has_continuous_action_space, action_std)
 
+    ckpt = Path("PPO_preTrained/AssettoCorsa/PPO_AssettoCorsa_0_0.pth")
+    if ckpt.is_file():
+        ppo_agent.load("PPO_preTrained/AssettoCorsa/PPO_AssettoCorsa_0_0.pth")
     # track total training time
     start_time = datetime.now().replace(microsecond=0)
     print("Started training at (GMT) : ", start_time)

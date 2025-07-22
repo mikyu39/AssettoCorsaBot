@@ -1,7 +1,7 @@
 from sim_info import SimInfo
 import vgamepad as vg
 import time
-import pyautogui
+import numpy as np
 
 info = SimInfo()
 old_progress = 0
@@ -9,6 +9,10 @@ laps = 0
 gamepad = vg.VX360Gamepad()
 gamepad.reset()
 gamepad.update()
+
+SPEED_MULT = 0.1
+LAP_COMPLETE_REWARD = 100
+LAP_FAIL_REWARD = -10
 
 def parse_input():
     global old_progress
@@ -55,10 +59,12 @@ def step(action):
     reward = delta
     if info.graphics.completedLaps > laps:
         done = True
-        reward += 100
+        reward += LAP_COMPLETE_REWARD
 
     if info.physics.numberOfTyresOut > 2:
         done = True
-        reward -= 100
+        reward += LAP_FAIL_REWARD
+
+    reward += info.physics.speedKmh * SPEED_MULT
 
     return vals, reward, done

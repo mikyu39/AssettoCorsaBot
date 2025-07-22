@@ -10,41 +10,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\PPO_logs\AssettoCorsa\PPO_AssettoCorsa_log_13.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\PPO_logs\AssettoCorsa\PPO_AssettoCorsa_log_15.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\PPO_logs\AssettoCorsa\PPO_AssettoCorsa_log_16.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\PPO_logs\AssettoCorsa\PPO_AssettoCorsa_log_17.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\PPO_logs\AssettoCorsa\PPO_AssettoCorsa_log_18.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>
