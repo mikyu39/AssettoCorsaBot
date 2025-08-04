@@ -5,17 +5,22 @@ import numpy as np
 
 info = SimInfo()
 old_progress = 0
+iters_not_moving = 0
+
+
 laps = 0
 gamepad = vg.VX360Gamepad()
 gamepad.reset()
 gamepad.update()
 
-SPEED_MULT = 0.1
+SPEED_MULT = 0.5
+NOT_MOVING_THRESHOLD = 10000
 LAP_COMPLETE_REWARD = 100
 LAP_FAIL_REWARD = -10
 
+
 def parse_input():
-    global old_progress
+    global old_progress, iters_not_moving, laps, gamepad
     # want to return 1d array with wheel slips, position, velocity, and normalized position.
     wheel_slips = list(info.physics.wheelSlip)
     velocity = list(info.physics.velocity)
@@ -23,6 +28,9 @@ def parse_input():
     # 1d value tracking the distance along the spline. goes from 0-1
     progress = [info.graphics.normalizedCarPosition + 0]
     wheels_out = [info.physics.numberOfTyresOut]
+
+    if round(velocity[0]) == 0:
+        iters_not_moving += 1
 
     out = wheel_slips + velocity + real_pos + progress + wheels_out
     return out
@@ -41,7 +49,7 @@ def perform_output(inputs):
     gamepad.update()
 
 def restart():
-    global old_progress
+    global old_progress, laps, iters_not_moving, gamepad
     gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
     gamepad.update()
     time.sleep(0.1)
@@ -50,6 +58,7 @@ def restart():
     time.sleep(0.1)
     old_progress = info.graphics.normalizedCarPosition
     laps = info.graphics.completedLaps
+    iters_not_moving = 0
 
 def step(action):
     perform_output(action)
@@ -62,6 +71,10 @@ def step(action):
         reward += LAP_COMPLETE_REWARD
 
     if info.physics.numberOfTyresOut > 2:
+        done = True
+        reward += LAP_FAIL_REWARD
+
+    if iters_not_moving > NOT_MOVING_THRESHOLD:
         done = True
         reward += LAP_FAIL_REWARD
 
