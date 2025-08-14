@@ -147,14 +147,6 @@ This project is actively being developed. Areas for improvement include:
 ## 📝 License
 
 This project is open source. Feel free to modify and improve upon it for your own Assetto Corsa AI experiments!
-
-## 🙏 Acknowledgments
-
-- **Rombik** for the original Assetto Corsa shared memory implementation
-- **ViGEm** for virtual gamepad emulation
-- **PyTorch** for the deep learning framework
-- **Assetto Corsa** developers for creating such a detailed racing simulation
-
 ---
 
 *Note: This bot learns through trial and error. Expect crashes, spins, and off-track excursions during early training phases. The AI will gradually improve its driving skills over time!*
