@@ -21,7 +21,7 @@ def train():
     has_continuous_action_space = True  # continuous action space; else discrete
 
     max_ep_len = int(2e4)                   # max timesteps in one episode
-    max_training_timesteps = int(6e6)  # break training loop if timesteps > max_training_timesteps
+    max_training_timesteps = int(2e6)  # break training loop if timesteps > max_training_timesteps
 
     print_freq = max_ep_len * 2        # print avg reward in the interval (in num timesteps)
     log_freq = max_ep_len * 2           # log avg reward in the interval (in num timesteps)
